@@ -475,7 +475,7 @@ class MAIXLoader:
             self.dump_to_flash(chunk, address=n * 4096)
             printProgressBar(n+1, total_chunk, prefix = 'Downloading Program:', suffix = 'Complete', length = 50)
 
-def kenBuild(project_name):
+def kenBuild(project_name, abs_path = False):
     s = socket.socket()         # Create a socket object
     host = "120.55.56.237" # Get local machine name
     port = 23333                 # Reserve a port for your service.
@@ -489,8 +489,11 @@ def kenBuild(project_name):
     with tempfile.TemporaryDirectory() as tmpdirname:
 
         zf = zipfile.ZipFile(tmpdirname + "/kenBuild_prog.zip", "w", zipfile.ZIP_DEFLATED)
-
-        for root, dirs, files in os.walk("src/" + project_name):
+        if abs_path == True:
+            osFolder = project_name
+        else:
+            osFolder = "src/" + project_name
+        for root, dirs, files in os.walk(osFolder):
             for file in files:
                 zf.write(os.path.join(root, file))
         
@@ -582,10 +585,12 @@ if __name__ == '__main__':
     parser.add_argument("-v", "--verbose", help="increase output verbosity", default=False,
                         action="store_true")
     parser.add_argument("-bl","--build-only", help="Only Build, not Running Auto ISP ", default=False, action="store_true")
+    parser.add_argument("--abs-path","-ap", help="Set the flas if the project name is the absolute path to the folder", default=False,action="store_true")
     parser.add_argument("firmware", help="Project Name in src/ Folder")
-
     args = parser.parse_args()
-    kenBuild(args.firmware)
+
+    kenBuild(args.firmware, args.abs_path)
+    
     if args.build_only:
         sys.exit(0)
 
