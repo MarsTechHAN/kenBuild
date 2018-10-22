@@ -18,10 +18,9 @@ You dont need to have the sdk at all, but it will nice for your IDE to have prop
 ```
 ### Command to Run
 ```Bash
-python kenBuild.py (--build-only) hello_world
+python kenBuild.py hello_world
+python kenBuild.py --build-only hello_world  #If you only want to build but dont want to run ISP Download.
 ```
-(--build-only) If you only want to build but dont want to run ISP Download.
-
  - If the build success, it will create a Build Folder under the sdk folder, and download the built .bin and symbol file into.
  - If the build fail, it will print the Error log, while download the whole build log to the Build Folder.
  
