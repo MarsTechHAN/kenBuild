@@ -36,6 +36,7 @@ import argparse
 import subprocess
 import sys, time
 import binascii
+import re
 
 class TimeoutError(Exception): pass
 
@@ -475,7 +476,7 @@ class MAIXLoader:
             self.dump_to_flash(chunk, address=n * 4096)
             printProgressBar(n+1, total_chunk, prefix = 'Downloading Program:', suffix = 'Complete', length = 50)
 
-def kenBuild(project_name, abs_path = False):
+def kenBuild(project_path, abs_path = False):
     s = socket.socket()         # Create a socket object
     host = "120.55.56.237" # Get local machine name
     port = 23333                 # Reserve a port for your service.
@@ -490,9 +491,12 @@ def kenBuild(project_name, abs_path = False):
 
         zf = zipfile.ZipFile(tmpdirname + "/kenBuild_prog.zip", "w", zipfile.ZIP_DEFLATED)
         if abs_path == True:
-            osFolder = project_name
+            osFolder = project_path
+            fileName = (re.search('\w+$', project_path)).group(0)
         else:
-            osFolder = "src/" + project_name
+            osFolder = "src/" + project_path
+            fileName = project_path
+
         for root, dirs, files in os.walk(osFolder):
             for file in files:
                 zf.write(os.path.join(root, file))
@@ -556,18 +560,18 @@ def kenBuild(project_name, abs_path = False):
                 print(data.decode("utf-8"))
                 print(INFO_MSG + " ===============================================")
 
-                logf = open("build/"+project_name+"_log.txt", "wb")
+                logf = open("build/"+fileName+"_log.txt", "wb")
                 logf.write(data)
                 logf.close()
             else:
                 if ".bin" in name:
                     data = zf.read(name)
-                    elff = open("build/"+project_name+".bin", "wb")
+                    elff = open("build/"+fileName+".bin", "wb")
                     elff.write(data)
                     elff.close()
                 else:
                     data = zf.read(name)
-                    binf = open("build/"+project_name, "wb")
+                    binf = open("build/"+fileName, "wb")
                     binf.write(data)
                     binf.close()
         zf.close()
