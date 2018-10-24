@@ -13,9 +13,6 @@ VID_LIST_FOR_AUTO_LOOKUP = "(1A86)|(0403)|(067B)|(10C4)"
 #                            WCH    FTDI    PL     CL
 timeout = 0.5
 
-import time
-import zlib
-
 try:
     import serial
     import serial.tools.list_ports
@@ -30,10 +27,9 @@ import hashlib
 import argparse
 import math
 import socket, os             
-import zlib,zipfile
+import zlib, lzma, zipfile
 import tempfile
 import argparse
-import subprocess
 import sys, time
 import binascii
 import re
@@ -489,7 +485,7 @@ def kenBuild(project_path, abs_path = False):
 
     with tempfile.TemporaryDirectory() as tmpdirname:
 
-        zf = zipfile.ZipFile(tmpdirname + "/kenBuild_prog.zip", "w", zipfile.ZIP_DEFLATED)
+        zf = zipfile.ZipFile(tmpdirname + "/kenBuild_prog.zip", "w", zipfile.ZIP_LZMA)
         if abs_path == True:
             osFolder = project_path
             fileName = (re.search('\w+$', project_path)).group(0)
@@ -589,7 +585,8 @@ if __name__ == '__main__':
     parser.add_argument("-v", "--verbose", help="increase output verbosity", default=False,
                         action="store_true")
     parser.add_argument("-bl","--build-only", help="Only Build, not Running Auto ISP ", default=False, action="store_true")
-    parser.add_argument("--abs-path","-ap", help="Set the flas if the project name is the absolute path to the folder", default=False,action="store_true")
+    parser.add_argument("-abs","--abs-path", help="Set the flas if the project name is the absolute path to the folder", default=False,action="store_true")
+    parser.add_argument("-incr","--incr-build", help="Set the flas if the project name is the absolute path to the folder", default=False,action="store_true")
     parser.add_argument("firmware", help="Project Name in src/ Folder")
     args = parser.parse_args()
 
